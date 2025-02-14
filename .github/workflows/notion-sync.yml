@@ -1,0 +1,25 @@
+name: NotionJAM
+on:
+  schedule:
+    - cron: "0 21 * * *"
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: notion-jam
+        uses: victornpb/notion-jam@v0.0.10
+        with:
+          NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
+          NOTION_DATABASE: b2d4ae21a939498c92de5277a1002ee0
+          FILTER_PROP: Status
+          FILTER_VALUES: Published
+          ARTICLE_PATH: content/posts/{title}/README.md
+      - name: Save changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Sync Notion content
